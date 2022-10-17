@@ -19,8 +19,8 @@ def newAdmin():
     password = has_str(request.json['password'])
 
     new_admin = Admin(email, DNI, name, password)
-    db.session.add(new_admin)
-    db.session.commit()
+    # db.session.add(new_admin)
+    # db.session.commit()
 
     return Admins_schema.jsonify(new_admin)
 

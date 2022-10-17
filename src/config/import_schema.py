@@ -1,7 +1,7 @@
 from models.admin import AdminSchema,Admin
 from models.teacher import TeacherSchema,Teacher
 
-from models.cource import CourseSchema,Course
+from models.course import CourseSchema,Course
 from models.schedule import ScheduleSchema,Schedule
 from models.classDb import ClassDbSchema,ClassDb
 

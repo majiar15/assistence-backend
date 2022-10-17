@@ -1,4 +1,5 @@
 
+from email.policy import default
 from config.database import db, ma, app
 
 class Student(db.Model):
@@ -8,13 +9,15 @@ class Student(db.Model):
     student_card = db.Column (db.Integer)
     DNI = db.Column (db.Integer)
     name = db.Column (db.String(150))
+    active= db.Column(db.Boolean,default=True)
 
-    def __init__(self, student_id, email, student_card, DNI, name):
-        self.student_id = student_id
+    def __init__(self, email, student_card, DNI, name,active):
+        
         self.email = email
         self.student_card = student_card
         self.DNI = DNI
         self.name = name
+        self.active=active
         
         
         

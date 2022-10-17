@@ -9,13 +9,15 @@ class Course(db.Model):
     duration = db.Column(db.String(150))
     date_start = db.Column(db.Date)
     date_end = db.Column(db.Date)
+    active= db.Column(db.Boolean,default=True)
 
-    def __init__(self, teacher_id,name,duration,date_start,date_end):
+    def __init__(self, teacher_id,name,duration,date_start,date_end,active):
         self.teacher_id = teacher_id
         self.name = name
         self.duration = duration
         self.date_start = date_start
-        self.date_end = date_end
+        self.date_end = date_end,
+        self.active = active
 
 with app.app_context():
     db.create_all()
