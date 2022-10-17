@@ -1,5 +1,5 @@
 
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, send_from_directory
 from flask_cors import CORS
 
 from config.database import app
@@ -11,9 +11,10 @@ from flask_swagger_ui import get_swaggerui_blueprint
 CORS(app)
 
 
+
 ### swagger specific ###
-SWAGGER_URL = '/api/docs'
-API_URL = 'http://localhost:5000/static/swagger.json'
+SWAGGER_URL = '/swagger'
+API_URL = '/static/swagger.json'
 SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
     SWAGGER_URL,
     API_URL,
@@ -23,6 +24,11 @@ SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
 )
 app.register_blueprint(admin)
 app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
+
+@app.route('/static/swagger.json',  methods=['GET'])
+def returnSwaggerJson():
+    return send_file("..\static\swagger.json")
+
 ### end swagger specific ###
 if __name__ == '__main__':
     app.run(debug=True)

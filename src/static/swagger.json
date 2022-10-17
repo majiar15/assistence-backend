@@ -2,11 +2,11 @@
 {
     "openapi": "3.0.0",
     "info": {
-      "description": "sean",
+      "description": "Asistence Backend",
       "version": "1.0.0",
-      "title": "Seans-Python3-Flask-Rest-Boilerplate",
+      "title": "Asistence Backend",
       "contact": {
-        "email": "seanwasere@gmail.com"
+        "email": "Majiar16@gmail.com - Danielsalinas70s@gmail.com"
       },
       "license": {
         "name": "MIT",
