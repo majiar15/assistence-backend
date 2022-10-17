@@ -5,7 +5,6 @@ class Asisst(db.Model):
     __tablename__ = 'Asisst'
     asisst_id = db.Column(db.Integer, primary_key=True)
     schedule_id =  db.Column(db.Integer, db.ForeignKey('Schedule.schedule_id'))
-
     student_id = db.Column(db.Integer, db.ForeignKey('Student.student_id'))
     
 

@@ -10,17 +10,9 @@ class CourseStudent(db.Model):
     def __init__(self, student_id, course_id):
         self.student_id = student_id
         self.course_id = course_id
-        
-        
-        
-        
-        
-        
-        
 
 with app.app_context():
     db.create_all()
-
 
 class CourseStudentSchema(ma.Schema):
     class Meta:

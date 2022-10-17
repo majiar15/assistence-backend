@@ -9,7 +9,6 @@ from models.student import StudentSchema,Student
 from models.course_student import CourseStudentSchema,CourseStudent
 from models.asisst import AsisstSchema,Asisst
 
-# app = Flask(__name__)
 
 Admin_schema = AdminSchema()
 Admins_schema = AdminSchema(many=True)

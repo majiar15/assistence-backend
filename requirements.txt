@@ -20,3 +20,6 @@ six==1.16.0
 SQLAlchemy==1.4.41
 virtualenv==20.16.5
 Werkzeug==2.2.2
+flask_cors==3.0.10
+pyjwt==2.5.0
+flask_swagger_ui==4.11.1
