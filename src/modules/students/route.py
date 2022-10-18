@@ -51,17 +51,24 @@ def newStudent():
             db.session.add(new_student)
             db.session.commit()
            
-            return student_schema.jsonify(new_student)
+            
 
         else:
             
             return response(403,'Parametros invalido, no envio ningun dato',)
-    except (RuntimeError, TypeError, NameError):
-        return jsonify({
-            "runtime":RuntimeError,
-            "typeError":TypeError,
-            "nameError":NameError
-        })
+    except Exception as err:
+        db.session.rollback()
+        return response(
+            400,
+            "error",
+            data= err.__cause__
+        )
+    return response(
+        200,
+        "success",
+        data=student_schema.dump(new_student)
+    )
+    
 
 
 
@@ -71,24 +78,41 @@ def getAllStudent():
     students=Student.query.filter_by(active=True).all()
     result=students_schema.dump(students)
     print("GET ALL STUDENT",result)
-    return jsonify(result),200
+
+    return response(
+        200,
+        "success",
+        data=result
+    )
 
 @student.route("/<id>",methods=['GET'])
 def getOneStudent(id):
     student=Student.query.filter_by(DNI=id).first()
-    return student_schema.jsonify(student)
+    return response(
+        200,
+        "success",
+        data= student_schema.dump(student)
+    )
+ 
+   
 
 @student.route("/<id>",methods=['PUT'])
 def updateStudent(id):
     request_data = request.get_json()
     student=Student.query.filter_by(DNI=id).first()
-
+    print(student)
+    if student is None:
+        return response(
+            404,
+            "Student not found",
+            
+        )
     if request_data:
         print(request_data)
         if "nombre" in request_data:
 
             if request_data['nombre']!='' and request_data['nombre']!=None:
-                student.name=request_data['nombre']
+                student.name = request_data['nombre']
                 print("El nuevo nombre es: ",request_data['nombre'])
 
         if "DNI" in request_data:
@@ -110,7 +134,12 @@ def updateStudent(id):
         
         db.session.commit()
     
-        return student_schema.jsonify(student)
+        return response(
+            200,
+            "success",
+            data= student_schema.dump(student)
+        )
+        #  student_schema.jsonify(student)
     
     else:
         return response(403,'No se enviaron ningun dato.',)
@@ -122,4 +151,8 @@ def deleteStudent(id):
     student=Student.query.filter_by(DNI=id).first()
     student.active=False
     db.session.commit()
-    return student_schema.jsonify(student)
+    return response(
+            200,
+            "Student deleted successfully",
+            data= student_schema.dump(student)
+        )
