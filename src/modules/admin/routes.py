@@ -1,5 +1,6 @@
 
 from flask import request, Blueprint
+from config.Token import token_required, verificar_token
 
 from config.database import db
 from config.import_schema import Admin_schema, Admins_schema, Admin
@@ -10,8 +11,25 @@ from utils.response import  response
 
 admin = Blueprint('admin',__name__, url_prefix='/admin') 
 
+# protect routes
+# @admin.before_request
+# def verifyToken():
+#     # try:
+#     #     token = request.headers['Authorization'].split(' ')[1]
+        
+#     # except Exception as err:
+#     #     return response(
+#     #         403,
+#     #         'Unauthorized',
+#     #         data = err.__cause__
+#     #     )
+
+#     # return verificar_token(token)
+#     return "hello"
+
 @admin.route('/', methods=['POST'])
-def newAdmin():    
+@token_required
+def newAdmin(token):    
     email = request.json['email']
     DNI = request.json['DNI']
     name = request.json['name']
@@ -38,7 +56,8 @@ def newAdmin():
     )
 
 @admin.route('/', methods=['GET'])
-def getAdmin():
+@token_required
+def getAdmin(token):
     try:
         all_admins = Admin.query.filter_by(active=True).all()
         resultAdmins = Admins_schema.dump(all_admins)
@@ -56,7 +75,8 @@ def getAdmin():
     
     
 @admin.route('/<id>',methods=['GET'])
-def getOneAdmin(id):
+@token_required
+def getOneAdmin(token,id):
     try:
         admin=Admin.query.filter_by(admin_id=id, active=True).first()
         print(Admin_schema.jsonify(admin))
@@ -78,7 +98,8 @@ def getOneAdmin(id):
     )
 
 @admin.route('/<id>',methods=['PUT'])
-def updateAdmin(id):
+@token_required
+def updateAdmin(token,id):
     try:
         admin=Admin.query.filter_by(admin_id=id, active=True).first()
         if admin == None:
@@ -123,7 +144,8 @@ def updateAdmin(id):
 
 
 @admin.route('/<id>',methods=['DELETE'])
-def deleteAdmin(id):
+@token_required
+def deleteAdmin(token,id):
     try:
         admin=Admin.query.get(id)
         admin.active=False

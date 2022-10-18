@@ -1,4 +1,5 @@
 from flask import request, Blueprint
+from config.Token import token_required
 
 from config.database import db
 from config.import_schema import teacher_schema, teachers_schema, Teacher
@@ -10,7 +11,8 @@ from utils.response import response
 teacher = Blueprint('teacher',__name__, url_prefix='/teacher') 
 
 @teacher.route('/', methods=['POST'])
-def newTeacher():    
+@token_required
+def newTeacher(token):    
     email = request.json['email']
     DNI = request.json['DNI']
     name = request.json['name']
@@ -37,7 +39,8 @@ def newTeacher():
     )
 
 @teacher.route('/', methods=['GET'])
-def getTeacher():
+@token_required
+def getTeacher(token):
     try:
         all_teachers = Teacher.query.filter_by(active=True).all()
         resultTeachers = teachers_schema.dump(all_teachers)
@@ -55,7 +58,8 @@ def getTeacher():
     
     
 @teacher.route('/<id>',methods=['GET'])
-def getOneTeacher(id):
+@token_required
+def getOneTeacher(token,id):
     try:
         teacher=Teacher.query.filter_by(teacher_id=id, active=True).first()
 
@@ -79,7 +83,8 @@ def getOneTeacher(id):
    
 
 @teacher.route('/<id>',methods=['PUT'])
-def updateTeacher(id):
+@token_required
+def updateTeacher(token,id):
     try:
         teacher=Teacher.query.filter_by(teacher_id=id, active=True).first()
         if teacher == None:
@@ -120,7 +125,8 @@ def updateTeacher(id):
 
 
 @teacher.route('/<id>',methods=['DELETE'])
-def deleteCourse(id):
+@token_required
+def deleteCourse(token,id):
     try:
         teacher=Teacher.query.get(id)
         teacher.active=False

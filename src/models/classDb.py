@@ -2,7 +2,7 @@
 from config.database import db, ma, app
 
 class ClassDb(db.Model):
-    __tablename__ = 'classDb'
+    __tablename__ = 'ClassDb'
     classDb_id = db.Column(db.Integer, primary_key=True)
     course_id = db.Column(db.Integer, db.ForeignKey('Course.course_id'))
     date = db.Column(db.Date)

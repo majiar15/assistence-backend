@@ -2,6 +2,7 @@ import io
 import jwt
 from datetime import datetime, timedelta, timezone
 
+from config.import_schema import Admin_schema, Admins_schema, Admin, Teacher
 def generar_fecha_vencimiento(dias=0, horas=0, minutos=0, segundos=0):
     fecha_actual = datetime.now(tz=timezone.utc)
     tiempo_vencimiento = timedelta(
@@ -12,20 +13,18 @@ def generar_fecha_vencimiento(dias=0, horas=0, minutos=0, segundos=0):
 
 
 # Función para generar token
-def generar_token(user_token, pass_token):
+def generar_token(user_token):
     try:
         fecha_vencimiento = generar_fecha_vencimiento(dias=1)["token"]
         payload = {
             "exp": fecha_vencimiento,
             "user_id": user_token,
-            "user_pass": pass_token,
         }
         print(f"Generando Token {payload}")
         
-        encoded_jwt = jwt.encode({"some": "payload"}, "secret", algorithm="HS256")
+        encoded_jwt = jwt.encode(payload, current_app.config["SECRET_KEY"], algorithm="HS256")
         
-        token = jwt.encode(payload, "pruebaToken", algorithm="HS256")
-        return Out_response(False, "Token generado exitosamente", datos=token)
+        return Out_response(False, "Token generado exitosamente", datos=encoded_jwt)
 
     except Exception as err:
         
@@ -93,18 +92,24 @@ def token_required(f):
                 "message": "Authentication Token is missing!",
                 "data": None,
                 "error": "Unauthorized"
-            }, 401
+            }, 401    
         try:
-            data=jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])
-            current_user=models.User().get_by_id(data["user_id"])
-            if current_user is None:
-                return {
-                "message": "Invalid Authentication token!",
-                "data": None,
-                "error": "Unauthorized"
-            }, 401
-            if not current_user["active"]:
-                abort(403)
+
+            data= jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])
+            # print(data)
+            
+            current_admin=Admin.query.filter_by(admin_id=data["user_id"], active=True).first() 
+            current_user = current_admin
+            if current_admin is None:
+                current_teacher=Teacher.query.filter_by(teacher_id=data["user_id"], active=True).first() 
+                current_user = current_teacher
+                if current_teacher is None:
+                    return {
+                        "message": "Invalid Authentication token!",
+                        "data": None,
+                        "error": "Unauthorized"
+                    }, 401
+
         except Exception as e:
             return {
                 "message": "Something went wrong",
