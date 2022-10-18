@@ -1,7 +1,8 @@
 
+from ast import dump
 from config.database import db
 from flask import jsonify, request, Blueprint
-from config.import_schema import schedule_schema, schedules_schema, Schedule,Student
+from config.import_schema import students_schema, schedules_schema, Schedule,Student
 from config.import_schema import course_schema, courses_schema, Course,CourseStudent,ClassDb,classDb_schema,Asisst
 from utils.response import  response
 from datetime import date,datetime
@@ -106,6 +107,57 @@ def newAssistance():
         return response(402,"Invalid parameters",)
 
 
+@assistance.route('/<fecha>/<courseId>',methods=['GET'])
+def getAssistDate(fecha,courseId):
+
+    if fecha==None or courseId==None:
+        return response(
+            402,
+            "Invalid parameters"
+        )
+    
 
 
+    auxFecha=datetime.strptime(fecha,'%Y-%m-%d')
+    classDbs=ClassDb.query.filter_by(course_id=int(courseId),date=auxFecha)
+
+    return response(
+        200,
+        "",
+        data=classDb_schema.dump(classDbs)
+    )
+
+    # auxStudent=[]
+    # if classDbs!=None:
+
+    #     assistance=Asisst.query.filter_by(classDb_id=classDbs['classDb_id']).all()
+
+    #     if assistance!=None:
+
+    #         for item in assistance:
+
+    #             student=Student.query.get(int(item.student_id))
+
+                
+    #             if student!=None:
+    #                 auxStudent.append(student)
+
+    #         return response(
+    #         402,
+    #         "Ok",
+    #         data=students_schema.dump(auxStudent)
+    #         )
+    #     else:
+
+    #         return response(
+    #         402,
+    #         "Assist no found"
+    #         )
+    # else:
+    #      return response(
+    #         402,
+    #         "class not found"
+    #         )  
+
+        
 
