@@ -6,11 +6,13 @@ from modules.admin.routes import admin
 from modules.students.route import student
 from modules.courses.route import course
 from modules.schedule.route import schedule
+from modules.teacher.routes import teacher
 
 CORS(app)
 
 
 app.register_blueprint(admin)
+app.register_blueprint(teacher)
 app.register_blueprint(student)
 app.register_blueprint(course)
 app.register_blueprint(schedule)

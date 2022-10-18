@@ -1,31 +1,30 @@
-
 from flask import request, Blueprint
 
 from config.database import db
-from config.import_schema import Admin_schema, Admins_schema, Admin
+from config.import_schema import teacher_schema, teachers_schema, Teacher
 
 from utils.has_str import has_str
-from utils.response import  response
+from utils.response import response
 
 
-admin = Blueprint('admin',__name__, url_prefix='/admin') 
+teacher = Blueprint('teacher',__name__, url_prefix='/teacher') 
 
-@admin.route('/', methods=['POST'])
-def newAdmin():    
+@teacher.route('/', methods=['POST'])
+def newTeacher():    
     email = request.json['email']
     DNI = request.json['DNI']
     name = request.json['name']
     password = has_str(request.json['password'])
 
-    new_admin = Admin(email, DNI, name, password, True)
+    new_teacher = Teacher(email, DNI, name, password, True)
     try:
-        db.session.add(new_admin)
+        db.session.add(new_teacher)
         db.session.commit()
     except Exception as err:
         db.session.rollback()
         return response(
             400,
-            'Error creating admin, please try again later',
+            'Error creating teacher, please try again later',
             data=format(err.__cause__)
         )
 
@@ -33,15 +32,15 @@ def newAdmin():
 
     return response(
         201,
-        'Admin create successfully',
+        'Teacher create successfully',
         data= data ,
     )
 
-@admin.route('/', methods=['GET'])
-def getAdmin():
+@teacher.route('/', methods=['GET'])
+def getTeacher():
     try:
-        all_admins = Admin.query.filter_by(active=True).all()
-        resultAdmins = Admins_schema.dump(all_admins)
+        all_teachers = Teacher.query.filter_by(active=True).all()
+        resultTeachers = teachers_schema.dump(all_teachers)
     except Exception as err:
         return response(
             400,
@@ -50,43 +49,45 @@ def getAdmin():
         )
     return response(
         200,
-        'get admin successfully',
-        data= resultAdmins
+        'get teacher successfully',
+        data= resultTeachers
     )
     
     
-@admin.route('/<id>',methods=['GET'])
-def getOneAdmin(id):
+@teacher.route('/<id>',methods=['GET'])
+def getOneTeacher(id):
     try:
-        admin=Admin.query.filter_by(admin_id=id, active=True).first()
-        print(Admin_schema.jsonify(admin))
+        teacher=Teacher.query.filter_by(teacher_id=id, active=True).first()
+
     except Exception as err:
          return response(
             400,
             'Error',
             data=format(err.__cause__)
         )
-    if admin is None:
+    if teacher is None:
         return response(
             404,
             'Admin not found',
         )
     return response(
         200,
-        'get Admin successfully',
-        data = Admin_schema.dump(admin)
+        'get Teacher successfully',
+        data = teacher_schema.dump(teacher)
     )
 
-@admin.route('/<id>',methods=['PUT'])
-def updateAdmin(id):
+   
+
+@teacher.route('/<id>',methods=['PUT'])
+def updateTeacher(id):
     try:
-        admin=Admin.query.filter_by(admin_id=id, active=True).first()
-        if admin == None:
+        teacher=Teacher.query.filter_by(teacher_id=id, active=True).first()
+        if teacher == None:
             return response(
                 400,
                 'Error',
                 data=format(
-                    'Admin not found with id: {}'.format(id)
+                    'Teacher not found with id: {}'.format(id)
                 )
             )
         request_data = request.get_json()
@@ -94,18 +95,18 @@ def updateAdmin(id):
         if request_data:
             if "name" in request_data:
                 if request_data['name']!='' and request_data['name']!=None:
-                    admin.name=request_data['name']
+                    teacher.name=request_data['name']
             if "email" in request_data:
                 if request_data['email']!='' and request_data['email']!=None:
-                    admin.email=request_data['email']
+                    teacher.email=request_data['email']
                     
             if "password" in request_data:
                 if request_data['password']!='' and request_data['password']!=None:
-                    admin.password= has_str(request_data['password'])
+                    teacher.password= has_str(request_data['password'])
 
             if "DNI" in request_data:
                 if request_data['DNI']!='' and request_data['DNI']!=None:
-                    admin.DNI=request_data['DNI']
+                    teacher.DNI=request_data['DNI']
 
             db.session.commit()
     except Exception as err:
@@ -115,18 +116,14 @@ def updateAdmin(id):
             data=format(err.__cause__)
         )            
 
-    return response(
-        200,
-        'Admin Update successfully',
-        data = Admin_schema.dump(admin)
-    )
+    return teacher_schema.jsonify(teacher)
 
 
-@admin.route('/<id>',methods=['DELETE'])
-def deleteAdmin(id):
+@teacher.route('/<id>',methods=['DELETE'])
+def deleteCourse(id):
     try:
-        admin=Admin.query.get(id)
-        admin.active=False
+        teacher=Teacher.query.get(id)
+        teacher.active=False
         db.session.commit()
     except Exception as err:
         return response(
@@ -136,8 +133,8 @@ def deleteAdmin(id):
         )
     return response(
         200,
-        'Admin Delete successfully',
-        data= Admin_schema.dump(admin)
+        'Teacher Delete successfully',
+        data= teacher_schema.dump(teacher)
     )
     
 
