@@ -168,7 +168,8 @@ def deleteAdmin(token,id):
 
 
 @admin.route('/enroll',methods=['POST'])
-def enrollStudent():
+@token_required
+def enrollStudent(token):
 
    
     request_data = request.get_json()

@@ -7,12 +7,13 @@ from config.import_schema import schedule_schema, schedules_schema,Schedule
 from utils.response import response
 from datetime import datetime
 from config.database import db
-
+from config.Token import token_required, verificar_token
 
 course=Blueprint('course',__name__,url_prefix='/cursos')
 
 @course.route('/',methods=['POST'])
-def newCourse():
+@token_required
+def newCourse(token):
 
     try:
         request_data = request.get_json()
@@ -75,7 +76,8 @@ def newCourse():
     )
 
 @course.route('/',methods=['GET'])
-def getAllCourses():
+@token_required
+def getAllCourses(token):
 
     courses=Course.query.filter_by(active=True).all()
     return response(
@@ -86,7 +88,8 @@ def getAllCourses():
    
 
 @course.route('/<id>',methods=['GET'])
-def getOneCourse(id):
+@token_required
+def getOneCourse(token,id):
 
     course=Course.query.filter_by(course_id=id, active=True).first()
     schedule=Schedule.query.filter_by(course_id=id, active=True).all()
@@ -101,7 +104,8 @@ def getOneCourse(id):
     course_schema.jsonify(course)
 
 @course.route('/<id>',methods=['PUT'])
-def updateCourse(id):
+@token_required
+def updateCourse(token,id):
         try:
             course=Course.query.get(id)
 
@@ -149,7 +153,8 @@ def updateCourse(id):
         
 
 @course.route('/<id>',methods=['DELETE'])
-def deleteCourse(id):
+@token_required
+def deleteCourse(token,id):
     course=Course.query.get(id)
     course.active=False
     db.session.commit()

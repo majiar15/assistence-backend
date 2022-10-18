@@ -5,12 +5,14 @@ from utils.response import response
 from utils.validate import isEmail
 from config.import_schema import student_schema, students_schema, Student
 from config.database import db
+from config.Token import token_required, verificar_token
 
 
 student=Blueprint('student',__name__,url_prefix='/estudiante')
 
 
 @student.route('/',methods=['POST'])
+@token_required
 def newStudent():
     try:
         request_data = request.get_json()
@@ -73,6 +75,7 @@ def newStudent():
 
 
 @student.route("/",methods=['GET'])
+@token_required
 def getAllStudent():
 
     students=Student.query.filter_by(active=True).all()
@@ -86,6 +89,7 @@ def getAllStudent():
     )
 
 @student.route("/<id>",methods=['GET'])
+@token_required
 def getOneStudent(id):
     student=Student.query.filter_by(DNI=id).first()
     return response(
@@ -97,6 +101,7 @@ def getOneStudent(id):
    
 
 @student.route("/<id>",methods=['PUT'])
+@token_required
 def updateStudent(id):
     request_data = request.get_json()
     student=Student.query.filter_by(DNI=id).first()
@@ -146,6 +151,7 @@ def updateStudent(id):
 
 
 @student.route("/<id>",methods=['DELETE'])
+@token_required
 def deleteStudent(id):
 
     student=Student.query.filter_by(DNI=id).first()
