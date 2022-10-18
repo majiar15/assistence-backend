@@ -1,7 +1,7 @@
 
 from typing import Any
 from flask import request, jsonify, Blueprint
-from utils.error import errorResponse
+from utils.response import response
 from utils.validate import isEmail
 from config.import_schema import student_schema, students_schema, Student
 from config.database import db
@@ -39,13 +39,13 @@ def newStudent():
 
                 data={"email":email,"DNI":dni,"nombre":name,"carnet_estudiante":student_card}
 
-                return errorResponse(403,'Pamatros invalidos.',data)
+                return response(403,'Pamatros invalidos.',data)
 
 
 
             
             if not isEmail(email):
-                return errorResponse(403,'Pamatro invalidos, el correo es invalido',{})
+                return response(403,'Pamatro invalidos, el correo es invalido',{})
 
             new_student =Student(email,student_card,dni,name,True)
             db.session.add(new_student)
@@ -55,7 +55,7 @@ def newStudent():
 
         else:
             
-            return errorResponse(403,'Parametros invalido, no envio ningun dato',)
+            return response(403,'Parametros invalido, no envio ningun dato',)
     except (RuntimeError, TypeError, NameError):
         return jsonify({
             "runtime":RuntimeError,
@@ -113,7 +113,7 @@ def updateStudent(id):
         return student_schema.jsonify(student)
     
     else:
-        return errorResponse(403,'No se enviaron ningun dato.',)
+        return response(403,'No se enviaron ningun dato.',)
 
 
 @student.route("/<id>",methods=['DELETE'])
