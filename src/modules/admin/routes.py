@@ -1,9 +1,12 @@
 
+from ast import dump
 from flask import request, Blueprint
 from config.Token import token_required, verificar_token
 
 from config.database import db
-from config.import_schema import Admin_schema, Admins_schema, Admin
+from config.import_schema import Admin_schema, Admins_schema, Admin,course_student_schema, CourseStudent
+from models.course import Course
+from models.student import Student
 
 from utils.has_str import has_str
 from utils.response import  response
@@ -164,4 +167,70 @@ def deleteAdmin(token,id):
     
 
 
-    
+@admin.route('/enroll',methods=['POST'])
+def enrollStudent():
+
+   
+    request_data = request.get_json()
+
+    courseId=None
+    studentId=None
+    if request_data:
+        
+        if "course_id" in request_data:
+            
+            if request_data['course_id']!='' and request_data['course_id']!=None:
+
+                courseId=request_data['course_id']
+                course=Course.query.get(courseId)
+                if course==None:
+                    return response(
+                        404,
+                        f"Course not found with id {courseId}",
+                        
+                    )
+
+        if "student_id" in request_data:
+            if request_data['student_id']!='' and request_data['student_id']!=None:
+                studentId=request_data['student_id']
+                student =Student.query.get(studentId)
+                if student==None:
+                    return response(
+                        404,
+                        f"Student not found with id {studentId}",
+                        
+                    )
+
+        if studentId==None or courseId==None:
+            return response(
+                402,
+                "Invalid parameters",
+                data={
+                    "course":courseId,
+                    "student":studentId
+                }
+            )
+        courseStudent=CourseStudent.query.filter_by(student_id=studentId, course_id=courseId).first()
+        if courseStudent==None:
+
+            auxcourseStudent=CourseStudent(studentId,courseId,True)
+            db.session.add(auxcourseStudent)
+            db.session.commit()
+            return response(
+                200,
+                "Student successfully enrolled",
+                data={
+                    "enroll":True
+                }
+            )
+        else:
+
+            return response(
+                200,
+                'The student is already enrolled',
+                data={
+                    "enroll":True
+                }
+            )
+        
+

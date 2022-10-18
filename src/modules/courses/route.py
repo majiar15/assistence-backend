@@ -169,17 +169,17 @@ def newSchedule(courseId,schedule):
         timeStart=None
         timeEnd=None
 
-        if "dia" in item:
-            if item['dia']!='' and item['dia']!=None:
-                day=item['dia']
+        if "day" in item:
+            if item['day']!='' and item['day']!=None:
+                day=dayiInNumber(item['day'].upper())
         
-        if "hora_inicio" in item:
-            if item['hora_inicio']!='' and item['hora_inicio']!=None:
-                timeStart=item['hora_inicio']
+        if "time_initial" in item:
+            if item['time_initial']!='' and item['time_initial']!=None:
+                timeStart=item['time_initial']
 
-        if "hora_fin" in item:
-            if item['hora_fin']!='' and item['hora_fin']!=None:
-                timeEnd=item['hora_fin']
+        if "time_end" in item:
+            if item['time_end']!='' and item['time_end']!=None:
+                timeEnd=item['time_end']
         auxSchedule=Schedule(courseId,day,timeStart,timeEnd, True)
         #print(schedule_schema.jsonify(auxSchedule))
         db.session.add(auxSchedule)
@@ -198,17 +198,17 @@ def updateSchedule(schedule):
         shedule=Schedule.query.get(item['id'])
 
 
-        if "dia" in item:
-            if item['dia']!='' and item['dia']!=None:
-                shedule.day=item['dia']
+        if "day" in item:
+            if item['day']!='' and item['day']!=None:
+                shedule.day= dayiInNumber(item['day'].upper())
         
-        if "hora_inicio" in item:
-            if item['hora_inicio']!='' and item['hora_inicio']!=None:
-                shedule.time_start=item['hora_inicio']
+        if "time_initial" in item:
+            if item['time_initial']!='' and item['time_initial']!=None:
+                shedule.time_start=item['time_initial']
 
-        if "hora_fin" in item:
-            if item['hora_fin']!='' and item['hora_fin']!=None:
-                shedule.time_end=item['hora_fin']
+        if "time_end" in item:
+            if item['time_end']!='' and item['time_end']!=None:
+                shedule.time_end=item['time_end']
         # auxSchedule=Schedule(courseId,day,timeStart,timeEnd, True)
         #print(schedule_schema.jsonify(auxSchedule))
         # db.session.add(auxSchedule)
@@ -221,3 +221,21 @@ def updateSchedule(schedule):
 
 
 
+def dayiInNumber(day):
+    
+    if day=='LUNES':
+        return 0
+    elif day=="MARTES":
+        return 1
+    elif day=="MIERCOLES":
+        return 2
+    elif day=="JUEVES":
+        return 3
+    elif day=="Viernes":
+        return 4
+    elif day=="SABADO":
+        return 5
+    elif day=="DOMINGO":
+        return 6
+    else:
+        return
