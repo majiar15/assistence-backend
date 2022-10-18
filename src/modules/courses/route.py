@@ -4,7 +4,7 @@
 from flask import jsonify, request, Blueprint
 from config.import_schema import course_schema, courses_schema, Course
 from config.import_schema import schedule_schema, schedules_schema,Schedule
-from utils.error import errorResponse
+from utils.response import response
 from datetime import datetime
 from config.database import db
 
@@ -36,7 +36,7 @@ def newCourse():
                 if request_data['duracion']!='' and request_data['duracion']!=None:
                     duration=request_data['duracion']
                     # aux=    duration.strftime('%d/%m/%Y')
-                    # return errorResponse(200,'Profesor registrado correctamente',{"duration":aux})
+                    # return response(200,'Profesor registrado correctamente',{"duration":aux})
             if "fecha_inicial" in request_data:
                 if request_data['fecha_inicial']!='' and request_data['fecha_inicial']!=None:
                     dateStart=datetime.strptime(request_data['fecha_inicial'],'%d/%m/%Y')
@@ -48,7 +48,7 @@ def newCourse():
             if teacherId==None or name==None or duration==None or dateStart==None or dateEnd ==None:
 
                 data={"profesor_id":teacherId,"nombre":name,"duracion":duration,"fecha_inicial":dateStart,"fecha_fin":dateEnd}
-                return errorResponse(403,'Verfique los datos ingresados, viene vacio',data)
+                return response(403,'Verfique los datos ingresados, viene vacio',data)
 
             course=Course(teacherId,name,duration,dateStart,dateEnd,True)
             db.session.add(course)
@@ -100,7 +100,7 @@ def updateCourse(id):
             if request_data['duracion']!='' and request_data['duracion']!=None:
                 course.duration=request_data['duracion']
                 # aux=    duration.strftime('%d/%m/%Y')
-                # return errorResponse(200,'Profesor registrado correctamente',{"duration":aux})
+                # return response(200,'Profesor registrado correctamente',{"duration":aux})
         if "fecha_inicial" in request_data:
             if request_data['fecha_inicial']!='' and request_data['fecha_inicial']!=None:
                 course.date_start=datetime.strptime(request_data['fecha_inicial'],'%d/%m/%Y')
