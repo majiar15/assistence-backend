@@ -10,9 +10,13 @@ schedule=Blueprint('horario',__name__,url_prefix='/horario')
 @schedule.route('/<teacherId>',methods=['GET'])
 def getScheduleTeacher(teacherId):
     print("El id del profesor es :",teacherId)
-    result =(db.session.query(Course,Schedule).filter(Course.teacher_id==teacherId).filter(Schedule.course_id==Course.course_id).all())
+    result =(db.session.query(Course,Schedule).join(Schedule).filter(Course.teacher_id==teacherId).all())
+
+    print(result)
+    aux=[]
     for course,schedule in result:
-        print(course.name,' - ',schedule.day)
-    return jsonify(result)
+       print(course.name, ' - ',schedule.day)
+        
+    return {}
 
     

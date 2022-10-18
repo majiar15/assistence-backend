@@ -39,7 +39,7 @@ def newStudent():
 
                 data={"email":email,"DNI":dni,"nombre":name,"carnet_estudiante":student_card}
 
-                return errorResponse(403,'Pamatros invalidos.',data)
+                return jsonify(errorResponse(403,'Pamatros invalidos.',data)),403
 
 
 
@@ -71,7 +71,7 @@ def getAllStudent():
     students=Student.query.filter_by(active=True).all()
     result=students_schema.dump(students)
     print("GET ALL STUDENT",result)
-    return jsonify(result)
+    return jsonify(result),200
 
 @student.route("/<id>",methods=['GET'])
 def getOneStudent(id):
