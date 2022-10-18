@@ -25,4 +25,4 @@ with app.app_context():
 
 class CourseSchema(ma.Schema):
     class Meta:
-        fields = ('course_id','teacher_id','name','duration','date_start','date_end')
+        fields = ('course_id','teacher_id','name','duration','date_start','date_end', 'active')

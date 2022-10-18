@@ -28,5 +28,5 @@ with app.app_context():
 
 class StudentSchema(ma.Schema):
     class Meta:
-        fields = ('student_id','email','student_card','DNI','name')
+        fields = ('student_id','email','student_card','DNI','name', 'active')
 
