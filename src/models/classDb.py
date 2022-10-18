@@ -19,4 +19,4 @@ with app.app_context():
 
 class ClassDbSchema(ma.Schema):
     class Meta:
-        fields = ('classDb_id','course_id','date', 'active')
+        fields = ('classDb_id','course_id','date')

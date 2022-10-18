@@ -20,4 +20,4 @@ with app.app_context():
 
 class AsisstSchema(ma.Schema):
     class Meta:
-        fields = ('asisst_id','schedule_id','student_id', 'active')
+        fields = ('asisst_id','schedule_id','student_id')

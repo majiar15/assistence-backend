@@ -22,4 +22,4 @@ with app.app_context():
 
 class AdminSchema(ma.Schema):
     class Meta:
-        fields = ('admin_id','email','DNI','name','password', 'active')
+        fields = ('admin_id','email','DNI','name','password')

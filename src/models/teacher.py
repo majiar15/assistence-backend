@@ -23,4 +23,4 @@ with app.app_context():
 
 class TeacherSchema(ma.Schema):
     class Meta:
-        fields = ('teacher_id','email','DNI','name','password', 'active')
+        fields = ('teacher_id','email','DNI','name','password')

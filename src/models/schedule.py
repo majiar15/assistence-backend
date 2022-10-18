@@ -23,4 +23,4 @@ with app.app_context():
 
 class ScheduleSchema(ma.Schema):
     class Meta:
-        fields = ('schedule_id','course_id','day','time_start','time_end', 'active')
+        fields = ('schedule_id','course_id','day','time_start','time_end')
