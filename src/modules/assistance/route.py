@@ -13,7 +13,7 @@ assistance=Blueprint('assistance',__name__,url_prefix='/assistance')
 
 @assistance.route('/',methods=['POST'])
 @token_required
-def newAssistance(token):
+def newAssistance():
 
     request_data = request.get_json()
 
@@ -111,7 +111,7 @@ def newAssistance(token):
 
 @assistance.route('/<fecha>/<courseId>',methods=['GET'])
 @token_required
-def getAssistDate(token,fecha,courseId):
+def getAssistDate(fecha,courseId):
 
     if fecha==None or courseId==None:
         return response(

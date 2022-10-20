@@ -12,7 +12,7 @@ teacher = Blueprint('teacher',__name__, url_prefix='/teacher')
 
 @teacher.route('/', methods=['POST'])
 @token_required
-def newTeacher(token):    
+def newTeacher():    
     email = request.json['email']
     DNI = request.json['DNI']
     name = request.json['name']
@@ -30,7 +30,7 @@ def newTeacher(token):
             data=format(err.__cause__)
         )
 
-    data = {'email': email, 'DNI': DNI, 'name': name, 'password': password}
+    data = {'email': email, 'DNI': DNI, 'name': name}
 
     return response(
         201,
@@ -40,7 +40,7 @@ def newTeacher(token):
 
 @teacher.route('/', methods=['GET'])
 @token_required
-def getTeacher(token):
+def getTeacher():
     try:
         all_teachers = Teacher.query.filter_by(active=True).all()
         resultTeachers = teachers_schema.dump(all_teachers)
@@ -50,6 +50,8 @@ def getTeacher(token):
             'Error',
             data=format(err.__cause__)
         )
+    for item in resultTeachers:
+        del item['password']
     return response(
         200,
         'get teacher successfully',
@@ -59,10 +61,11 @@ def getTeacher(token):
     
 @teacher.route('/<id>',methods=['GET'])
 @token_required
-def getOneTeacher(token,id):
+def getOneTeacher(id):
     try:
         teacher=Teacher.query.filter_by(teacher_id=id, active=True).first()
-
+        resp = teacher_schema.dump(teacher)
+        del resp['password']
     except Exception as err:
          return response(
             400,
@@ -77,14 +80,14 @@ def getOneTeacher(token,id):
     return response(
         200,
         'get Teacher successfully',
-        data = teacher_schema.dump(teacher)
+        data = resp
     )
 
    
 
 @teacher.route('/<id>',methods=['PUT'])
 @token_required
-def updateTeacher(token,id):
+def updateTeacher(id):
     try:
         teacher=Teacher.query.filter_by(teacher_id=id, active=True).first()
         if teacher == None:
@@ -121,12 +124,15 @@ def updateTeacher(token,id):
             data=format(err.__cause__)
         )            
 
-    return teacher_schema.jsonify(teacher)
+    return response(
+        200,
+        "Teacher Update successfully"
+    )
 
 
 @teacher.route('/<id>',methods=['DELETE'])
 @token_required
-def deleteCourse(token,id):
+def deleteCourse(id):
     try:
         teacher=Teacher.query.get(id)
         teacher.active=False

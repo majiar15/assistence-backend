@@ -27,12 +27,12 @@ admin = Blueprint('admin',__name__, url_prefix='/admin')
 #     #         data = err.__cause__
 #     #     )
 
-#     # return verificar_token(token)
+#     # return verificar_token()
 #     return "hello"
 
 @admin.route('/', methods=['POST'])
 @token_required
-def newAdmin(token):    
+def newAdmin():    
     email = request.json['email']
     DNI = request.json['DNI']
     name = request.json['name']
@@ -50,7 +50,7 @@ def newAdmin(token):
             data=format(err.__cause__)
         )
 
-    data = {'email': email, 'DNI': DNI, 'name': name, 'password': password}
+    data = {'email': email, 'DNI': DNI, 'name': name}
 
     return response(
         201,
@@ -60,16 +60,19 @@ def newAdmin(token):
 
 @admin.route('/', methods=['GET'])
 @token_required
-def getAdmin(token):
+def getAdmin():
     try:
         all_admins = Admin.query.filter_by(active=True).all()
         resultAdmins = Admins_schema.dump(all_admins)
+        
     except Exception as err:
         return response(
             400,
             'Error',
             data=format(err.__cause__)
         )
+    for item in resultAdmins:
+        del item['password']
     return response(
         200,
         'get admin successfully',
@@ -79,10 +82,11 @@ def getAdmin(token):
     
 @admin.route('/<id>',methods=['GET'])
 @token_required
-def getOneAdmin(token,id):
+def getOneAdmin(id):
     try:
         admin=Admin.query.filter_by(admin_id=id, active=True).first()
-        print(Admin_schema.jsonify(admin))
+        res = Admin_schema.dump(admin)
+        del res['password']
     except Exception as err:
          return response(
             400,
@@ -97,12 +101,12 @@ def getOneAdmin(token,id):
     return response(
         200,
         'get Admin successfully',
-        data = Admin_schema.dump(admin)
+        data = res
     )
 
 @admin.route('/<id>',methods=['PUT'])
 @token_required
-def updateAdmin(token,id):
+def updateAdmin(id):
     try:
         admin=Admin.query.filter_by(admin_id=id, active=True).first()
         if admin == None:
@@ -141,14 +145,13 @@ def updateAdmin(token,id):
 
     return response(
         200,
-        'Admin Update successfully',
-        data = Admin_schema.dump(admin)
+        'Admin Update successfully'
     )
 
 
 @admin.route('/<id>',methods=['DELETE'])
 @token_required
-def deleteAdmin(token,id):
+def deleteAdmin(id):
     try:
         admin=Admin.query.get(id)
         admin.active=False
@@ -169,7 +172,7 @@ def deleteAdmin(token,id):
 
 @admin.route('/enroll',methods=['POST'])
 @token_required
-def enrollStudent(token):
+def enrollStudent():
 
    
     request_data = request.get_json()

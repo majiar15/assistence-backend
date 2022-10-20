@@ -13,7 +13,7 @@ course=Blueprint('course',__name__,url_prefix='/cursos')
 
 @course.route('/',methods=['POST'])
 @token_required
-def newCourse(token):
+def newCourse():
 
     try:
         request_data = request.get_json()
@@ -77,7 +77,7 @@ def newCourse(token):
 
 @course.route('/',methods=['GET'])
 @token_required
-def getAllCourses(token):
+def getAllCourses():
 
     courses=Course.query.filter_by(active=True).all()
     return response(
@@ -89,7 +89,7 @@ def getAllCourses(token):
 
 @course.route('/<id>',methods=['GET'])
 @token_required
-def getOneCourse(token,id):
+def getOneCourse(id):
 
     course=Course.query.filter_by(course_id=id, active=True).first()
     schedule=Schedule.query.filter_by(course_id=id, active=True).all()
@@ -105,7 +105,7 @@ def getOneCourse(token,id):
 
 @course.route('/<id>',methods=['PUT'])
 @token_required
-def updateCourse(token,id):
+def updateCourse(id):
         try:
             course=Course.query.get(id)
 
@@ -154,7 +154,7 @@ def updateCourse(token,id):
 
 @course.route('/<id>',methods=['DELETE'])
 @token_required
-def deleteCourse(token,id):
+def deleteCourse(id):
     course=Course.query.get(id)
     course.active=False
     db.session.commit()
