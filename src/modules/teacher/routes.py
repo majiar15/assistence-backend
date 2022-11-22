@@ -7,8 +7,7 @@ from config.import_schema import teacher_schema, teachers_schema, Teacher
 from utils.has_str import has_str
 from utils.response import response
 
-
-teacher = Blueprint('teacher',__name__, url_prefix='/teacher') 
+teacher = Blueprint('teacher',__name__, url_prefix='/api/teacher') 
 
 @teacher.route('/', methods=['POST'])
 @token_required

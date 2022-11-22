@@ -1,5 +1,4 @@
 
-from flask_cors import CORS
 
 from config.database import app
 from modules.admin.routes import admin
@@ -9,7 +8,7 @@ from modules.schedule.route import schedule
 from modules.teacher.routes import teacher
 from modules.auth.routes import auth
 from modules.assistance.route import assistance
-CORS(app)
+
 
 
 app.register_blueprint(admin)
