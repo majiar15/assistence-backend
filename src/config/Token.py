@@ -15,7 +15,7 @@ def generar_fecha_vencimiento(dias=0, horas=0, minutos=0, segundos=0):
 # Función para generar token
 def generar_token(user_token):
     try:
-        fecha_vencimiento = generar_fecha_vencimiento(minutos=10)["token"]
+        fecha_vencimiento = generar_fecha_vencimiento(dias=2)["token"]
         payload = {
             "exp": fecha_vencimiento,
             "user_id": user_token,
@@ -34,15 +34,12 @@ def generar_token(user_token):
 # Función para verificar el token
 def verificar_token(token):
     try:
-        print("token =>", token)
-        token_verif = jwt.decode(token, "pruebaToken", algorithms="HS256")
+       
+        token_verif = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms="HS256")
         if token_verif:
             print("token válido")
-            res = {
-                "error": False,
-                "mensaje": "token válido"
-            }
-            return res
+            
+            return token_verif
         else:
             return Error_response(True, "Token Inválido", 101)
     except Exception as err:
@@ -95,8 +92,9 @@ def token_required(f):
             }, 401    
         try:
 
-            data= jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])
-            # print(data)
+            data= verificar_token(token)
+            # jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])
+            print(data)
             
             current_admin=Admin.query.filter_by(admin_id=data["user_id"], active=True).first() 
             current_user = current_admin
@@ -111,10 +109,12 @@ def token_required(f):
                     }, 401
 
         except Exception as e:
+            print(str(e))
             return {
                 "message": "Something went wrong",
                 "data": None,
-                "error": str(e)
+                "error": str(e),
+                "print":str(e)
             }, 500
 
         return f(*args, **kwargs)
