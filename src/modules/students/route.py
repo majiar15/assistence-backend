@@ -8,7 +8,7 @@ from config.database import db
 from config.Token import token_required, verificar_token
 
 
-student=Blueprint('student',__name__,url_prefix='/estudiante')
+student=Blueprint('student',__name__,url_prefix='/api/estudiante')
 
 
 @student.route('/',methods=['POST'])

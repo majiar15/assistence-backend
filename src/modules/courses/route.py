@@ -9,7 +9,7 @@ from datetime import datetime
 from config.database import db
 from config.Token import token_required, verificar_token
 
-course=Blueprint('course',__name__,url_prefix='/cursos')
+course=Blueprint('course',__name__,url_prefix='/api/cursos')
 
 @course.route('/',methods=['POST'])
 @token_required

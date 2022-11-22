@@ -12,7 +12,7 @@ from utils.has_str import has_str
 from utils.response import  response
 
 
-admin = Blueprint('admin',__name__, url_prefix='/admin') 
+admin = Blueprint('admin',__name__, url_prefix='/api/admin') 
 
 # protect routes
 # @admin.before_request

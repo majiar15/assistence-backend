@@ -8,7 +8,7 @@ from utils.response import  response
 from datetime import date,datetime
 from config.Token import token_required, verificar_token
 
-assistance=Blueprint('assistance',__name__,url_prefix='/assistance')
+assistance=Blueprint('assistance',__name__,url_prefix='/api/assistance')
 
 
 @assistance.route('/',methods=['POST'])

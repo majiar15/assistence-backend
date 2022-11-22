@@ -4,7 +4,7 @@ from config.import_schema import  schedules_schema, Schedule
 from config.import_schema import course_schema, courses_schema, Course
 from config.Token import token_required, verificar_token
 
-schedule=Blueprint('horario',__name__,url_prefix='/horario')
+schedule=Blueprint('horario',__name__,url_prefix='/api/horario')
 
 @schedule.route('/<teacherId>',methods=['GET'])
 @token_required

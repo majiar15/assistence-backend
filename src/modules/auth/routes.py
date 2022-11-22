@@ -9,7 +9,7 @@ from utils.has_str import has_str
 from utils.response import  response
 
 
-auth = Blueprint('auth',__name__, url_prefix='/auth') 
+auth = Blueprint('auth',__name__, url_prefix='/api/auth') 
 
 @auth.route('/login', methods=['POST'])
 def login():    
