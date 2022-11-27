@@ -167,6 +167,27 @@ def deleteCourse(id):
     )
      
 
+@course.route('/courseByTeacher',methods=['GET'])
+@token_required
+def coursesByTeacher():
+    try:
+        teacher_id= request.args.get('teacher_id')
+
+        print("Buscar profesor: ",teacher_id)
+        course=Course.query.filter_by(teacher_id=teacher_id, active=True).all()
+        
+    except Exception as err:
+        db.session.rollback()
+        return response(
+            400,
+            'error',
+            data= err.__cause__
+        )    
+    return response(
+            200,
+            'course successfully',
+            data = courses_schema.dump(course)
+        )
 
 def newSchedule(courseId,schedule):
     reps=[]
