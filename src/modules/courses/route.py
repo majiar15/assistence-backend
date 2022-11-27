@@ -22,7 +22,7 @@ def newCourse():
         duration=None
         dateStart=None
         dateEnd=None
-       
+        
         if request_data:
 
             if "profesor_id" in request_data:
@@ -40,24 +40,26 @@ def newCourse():
                     # return response(200,'Profesor registrado correctamente',{"duration":aux})
             if "fecha_inicial" in request_data:
                 if request_data['fecha_inicial']!='' and request_data['fecha_inicial']!=None:
-                    dateStart=datetime.strptime(request_data['fecha_inicial'],'%d/%m/%Y')
+                    dateStart=datetime.strptime(request_data['fecha_inicial'],'%Y-%m-%d')
             
             if "fecha_fin" in request_data:
                 if request_data['fecha_fin']!='' and request_data['fecha_fin']!=None:
-                    dateEnd=datetime.strptime(request_data['fecha_fin'],'%d/%m/%Y')
+                    dateEnd=datetime.strptime(request_data['fecha_fin'],'%Y-%m-%d')
 
             if teacherId==None or name==None or duration==None or dateStart==None or dateEnd ==None:
 
                 data={"profesor_id":teacherId,"nombre":name,"duracion":duration,"fecha_inicial":dateStart,"fecha_fin":dateEnd}
                 return response(403,'Verfique los datos ingresados, viene vacio',data)
 
+            
             course=Course(teacherId,name,duration,dateStart,dateEnd,True)
             db.session.add(course)
             db.session.commit()
             if "horarios" in request_data:
                 #respuesta de los horarios guardado en db solo falta responderle a usuario
+              
                 reps= newSchedule(course.course_id,list(request_data['horarios']))
-            print('Respuesta de horarios',reps)
+           
     
     except Exception as err:
         db.session.rollback()
