@@ -174,67 +174,78 @@ def deleteAdmin(id):
 @token_required
 def enrollStudent():
 
-   
-    request_data = request.get_json()
+    try:
+        request_data = request.get_json()
 
-    courseId=None
-    studentId=None
-    if request_data:
-        
-        if "course_id" in request_data:
-            
-            if request_data['course_id']!='' and request_data['course_id']!=None:
+        courseId=None
+        dniStudent=None
+        student=None
+        if request_data:
 
-                courseId=request_data['course_id']
-                course=Course.query.get(courseId)
-                if course==None:
-                    return response(
-                        404,
-                        f"Course not found with id {courseId}",
-                        
-                    )
+            if "course_id" in request_data:
 
-        if "student_id" in request_data:
-            if request_data['student_id']!='' and request_data['student_id']!=None:
-                studentId=request_data['student_id']
-                student =Student.query.get(studentId)
-                if student==None:
-                    return response(
-                        404,
-                        f"Student not found with id {studentId}",
-                        
-                    )
+                if request_data['course_id']!='' and request_data['course_id']!=None:
 
-        if studentId==None or courseId==None:
-            return response(
-                402,
-                "Invalid parameters",
-                data={
-                    "course":courseId,
-                    "student":studentId
-                }
-            )
-        courseStudent=CourseStudent.query.filter_by(student_id=studentId, course_id=courseId).first()
-        if courseStudent==None:
+                    courseId=request_data['course_id']
+                    course=Course.query.get(courseId)
+                    if course==None:
+                        return response(
+                            404,
+                            f"Course not found with id {courseId}",
 
-            auxcourseStudent=CourseStudent(studentId,courseId,True)
-            db.session.add(auxcourseStudent)
-            db.session.commit()
-            return response(
-                200,
-                "Student successfully enrolled",
-                data={
-                    "enroll":True
-                }
-            )
-        else:
+                        )
 
-            return response(
-                200,
-                'The student is already enrolled',
-                data={
-                    "enroll":True
-                }
-            )
-        
+            if "DNI_student" in request_data:
+                if request_data['DNI_student']!='' and request_data['DNI_student']!=None:
+                    dniStudent=request_data['DNI_student']
+                    student =Student.query.filter_by(DNI= dniStudent).first()
+                    if student==None:
+                        return response(
+                            404,
+                            f"Student not found with id {dniStudent}",
+
+                        )
+
+            if dniStudent==None or courseId==None:
+                return response(
+                    402,
+                    "Invalid parameters",
+                    data={
+                        "course":courseId,
+                        "student":dniStudent
+                    }
+                )
+            courseStudent=CourseStudent.query.filter_by(student_id=student.student_id, course_id=courseId).first()
+           
+            if courseStudent==None:
+                
+                auxcourseStudent=CourseStudent(student_id=student.student_id,course_id=courseId,active=True)
+                
+                db.session.add(auxcourseStudent)
+                db.session.commit()
+                
+            else:
+
+                return response(
+                    200,
+                    'The student is already enrolled',
+                    data={
+                        "enroll":True
+                    }
+                )
+    except Exception as err:
+        db.session.rollback()
+        return response(
+            400,
+            'error',
+            data= err.__cause__
+        )
+    return response(
+                    200,
+                    "Student successfully enrolled",
+                    data={
+                        "enroll":True
+                    }
+                )   
+      
 
