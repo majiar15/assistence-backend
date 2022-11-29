@@ -1,6 +1,7 @@
 
 from typing import Any
 from flask import request, jsonify, Blueprint
+from models.course_student import CourseStudent
 from utils.response import response
 from utils.validate import isEmail
 from config.import_schema import student_schema, students_schema, Student
@@ -162,3 +163,18 @@ def deleteStudent(id):
             "Student deleted successfully",
             data= student_schema.dump(student)
         )
+
+
+@student.route("asistencia/<id>",methods=['GET'])
+
+def getStudentsCourse(id):
+    results=db.session.query(CourseStudent,Student).join(Student).filter(CourseStudent.course_id==id).all()
+    data=[]
+    print("Estudiante: ",results)
+    for course_student, student in results:
+        data.append(student_schema.dump(student))
+    return response(
+        200,
+        "success",
+        data= data
+    )
