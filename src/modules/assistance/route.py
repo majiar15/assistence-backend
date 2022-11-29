@@ -151,13 +151,16 @@ def getAssistDate(fecha,courseId):
         else:
 
             return response(
-            402,
-            "Assist no found"
+            200,
+            "Assist no found",
+            data=[]
             )
     else:
          return response(
-            402,
-            "class not found"
+            200,
+            "class not found",
+            data=[]
+
             )  
 
         
