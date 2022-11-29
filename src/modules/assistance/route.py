@@ -144,7 +144,7 @@ def getAssistDate(fecha,courseId):
                     auxStudent.append(student)
 
             return response(
-            402,
+            200,
             "Ok",
             data=students_schema.dump(auxStudent)
             )

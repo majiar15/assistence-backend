@@ -47,7 +47,7 @@ def login():
     if admin is None:
         token = generar_token(teacher.teacher_id)
     else:
-        token = generar_token(admin.admin_id)
+        token = generar_token(admin.admin_id,True)
 
     return response(
         200,
