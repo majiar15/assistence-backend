@@ -167,11 +167,11 @@ def deleteCourse(id):
     )
      
 
-@course.route('/courseByTeacher',methods=['GET'])
+@course.route('/courseByTeacher/<teacher_id>',methods=['GET'])
 @token_required
-def coursesByTeacher():
+def coursesByTeacher(teacher_id):
     try:
-        teacher_id= request.args.get('teacher_id')
+        
 
         print("Buscar profesor: ",teacher_id)
         course=Course.query.filter_by(teacher_id=teacher_id, active=True).all()

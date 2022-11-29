@@ -15,7 +15,7 @@ def generar_fecha_vencimiento(dias=0, horas=0, minutos=0, segundos=0):
 # Función para generar token
 def generar_token(user_token):
     try:
-        fecha_vencimiento = generar_fecha_vencimiento(dias=2)["token"]
+        fecha_vencimiento = generar_fecha_vencimiento(segundos=8)["token"]
         payload = {
             "exp": fecha_vencimiento,
             "user_id": user_token,
