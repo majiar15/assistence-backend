@@ -31,7 +31,6 @@ admin = Blueprint('admin',__name__, url_prefix='/api/admin')
 #     return "hello"
 
 @admin.route('/', methods=['POST'])
-@token_required
 def newAdmin():    
     email = request.json['email']
     DNI = request.json['DNI']
